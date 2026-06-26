@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock Layout - Fire Hydrant Contractor</title>
+    <style>
+        /* ─── RESET & BASE ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0b1a2e; /* deep navy – feels trustworthy */
+            color: #ffffff;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ─── CLOCK CONTAINER ─── */
+        .clock {
+            position: relative;
+            width: 90vmin;    /* scales with viewport */
+            height: 90vmin;
+            max-width: 800px;
+            max-height: 800px;
+        }
+
+        /* ─── CENTER LOGO ─── */
+        .logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 28%;
+            height: 28%;
+            background: #e63946; /* fire-engine red */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: clamp(2rem, 6vmin, 4.5rem);
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 0 0 4px #ffffff33, 0 0 40px #e6394680;
+            z-index: 10;
+            text-align: center;
+            line-height: 1.2;
+            letter-spacing: 2px;
+            user-select: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .logo:hover {
+            transform: translate(-50%, -50%) scale(1.04);
+            box-shadow: 0 0 0 6px #ffffff55, 0 0 60px #e63946cc;
+        }
+        .logo small {
+            display: block;
+            font-size: 0.35em;
+            font-weight: 400;
+            letter-spacing: 1px;
+            opacity: 0.85;
+        }
+
+        /* ─── CLOCK ITEMS (all 4 positions) ─── */
+        .clock-item {
+            position: absolute;
+            width: 26%;
+            height: 26%;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0.75rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            opacity: 0; /* hidden until JS animates in */
+            transform: scale(0.8);
+        }
+        .clock-item:hover {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: #e63946;
+            transform: scale(1.06) !important;
+            box-shadow: 0 0 30px #e6394640;
+        }
+
+        .clock-item .icon {
+            font-size: clamp(1.8rem, 5vmin, 3.8rem);
+            margin-bottom: 4px;
+        }
+        .clock-item .label {
+            font-weight: 700;
+            font-size: clamp(0.9rem, 2vmin, 1.6rem);
+            letter-spacing: 1px;
+        }
+        .clock-item .sub {
+            font-size: clamp(0.5rem, 1.2vmin, 0.85rem);
+            opacity: 0.7;
+            margin-top: 2px;
+            font-weight: 300;
+        }
+
+        /* ─── POSITIONING (clock face) ─── */
+        /* 12 o'clock – Slogan */
+        .item-top {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+        }
+        .item-top:hover {
+            transform: translateX(-50%) scale(1.06) !important;
+        }
+
+        /* 9 o'clock – About + Services (left) */
+        .item-left {
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%) scale(0.8);
+        }
+        .item-left:hover {
+            transform: translateY(-50%) scale(1.06) !important;
+        }
+
+        /* 3 o'clock – Reviews (right) */
+        .item-right {
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%) scale(0.8);
+        }
+        .item-right:hover {
+            transform: translateY(-50%) scale(1.06) !important;
+        }
+
+        /* 6 o'clock – Contact (bottom) */
+        .item-bottom {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+        }
+        .item-bottom:hover {
+            transform: translateX(-50%) scale(1.06) !important;
+        }
+
+        /* ─── DECORATIVE RING (optional clock face line) ─── */
+        .ring {
+            position: absolute;
+            top: 6%;
+            left: 6%;
+            width: 88%;
+            height: 88%;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.08);
+            pointer-events: none;
+        }
+        .ring::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* ─── RESPONSIVE: collapse to vertical stack on small screens ─── */
+        @media (max-width: 640px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+                min-height: 100vh;
+                padding: 2rem 1rem;
+                background: #0b1a2e;
+            }
+            .clock {
+                width: 100%;
+                height: auto;
+                max-width: 400px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 1.25rem;
+                position: static;
+                padding: 1rem 0;
+            }
+            .logo {
+                position: static;
+                transform: none;
+                width: 120px;
+                height: 120px;
+                font-size: 2.2rem;
+                box-shadow: 0 0 0 4px #ffffff33, 0 0 40px #e6394680;
+                flex-shrink: 0;
+            }
+            .logo:hover {
+                transform: scale(1.04);
+            }
+            .clock-item {
+                position: static;
+                transform: none !important;
+                width: 100%;
+                height: auto;
+                padding: 1rem 1.2rem;
+                border-radius: 16px;
+                flex-direction: row;
+                gap: 1rem;
+                justify-content: flex-start;
+                opacity: 0;
+                transform: scale(0.9) !important;
+                backdrop-filter: blur(4px);
+            }
+            .clock-item .icon {
+                font-size: 2rem;
+                margin-bottom: 0;
+            }
+            .clock-item .label {
+                font-size: 1.1rem;
+            }
+            .clock-item .sub {
+                font-size: 0.75rem;
+                margin-top: 0;
+            }
+            .clock-item:hover {
+                transform: scale(1.02) !important;
+            }
+            .ring {
+                display: none;
+            }
+        }
+
+        /* ─── ANIMATED ENTRANCE (JS triggers this) ─── */
+        .clock-item.visible {
+            opacity: 1;
+            transform: scale(1);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* each item gets a staggered delay via JS inline style */
+    </style>
+</head>
+<body>
+
+    <div class="clock">
+
+        <!-- decorative rings -->
+        <div class="ring"></div>
+
+        <!-- ─── LOGO (center) ─── -->
+        <div class="logo">
+            H<span style="font-weight:300;">2</span>O<span style="font-weight:300;">+</span>
+            <small>fire protection</small>
+        </div>
+
+        <!-- ─── 12 o'clock – Slogan ─── -->
+        <a href="#" class="clock-item item-top" data-delay="100">
+            <span class="icon">🔥</span>
+            <span class="label">Reliable. Ready. Rapid.</span>
+            <span class="sub">Fire hydrant experts since 2005</span>
+        </a>
+
+        <!-- ─── 9 o'clock – About + Services ─── -->
+        <a href="#" class="clock-item item-left" data-delay="250">
+            <span class="icon">⚙️</span>
+            <span class="label">About &amp; Services</span>
+            <span class="sub">Installation · Repair · Maintenance</span>
+        </a>
+
+        <!-- ─── 3 o'clock – Reviews ─── -->
+        <a href="#" class="clock-item item-right" data-delay="400">
+            <span class="icon">⭐</span>
+            <span class="label">Reviews</span>
+            <span class="sub">4.9/5 · 120+ happy clients</span>
+        </a>
+
+        <!-- ─── 6 o'clock – Contact Us ─── -->
+        <a href="#" class="clock-item item-bottom" data-delay="550">
+            <span class="icon">📞</span>
+            <span class="label">Contact Us</span>
+            <span class="sub">(555) 234-5678 · 24/7 emergency</span>
+        </a>
+
+    </div>
+
+    <script>
+        // ─── STAGGERED ENTRANCE ANIMATION ───
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.clock-item');
+            items.forEach((el) => {
+                const delay = parseInt(el.getAttribute('data-delay')) || 0;
+                setTimeout(() => {
+                    el.classList.add('visible');
+                }, delay);
+            });
+        });
+
+        // ─── (Optional) click handlers – replace # with real URLs ───
+        document.querySelectorAll('.clock-item').forEach((link) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                // For demo – show which section was clicked
+                const label = link.querySelector('.label')?.innerText || 'section';
+                alert(`You clicked: ${label}\n(Replace this with actual page navigation.)`);
+            });
+        });
+    </script>
+
+</body>
+</html>
