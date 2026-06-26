@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clock Layout - Fire Hydrant Contractor</title>
+    <title>Daniel's Services - Clock Layout</title>
     <style>
         /* ─── RESET & BASE ─── */
         * {
@@ -14,7 +14,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #0b1a2e; /* deep navy – feels trustworthy */
+            background: #1a1a2e;
             color: #ffffff;
             height: 100vh;
             overflow: hidden;
@@ -26,10 +26,10 @@
         /* ─── CLOCK CONTAINER ─── */
         .clock {
             position: relative;
-            width: 90vmin;    /* scales with viewport */
+            width: 90vmin;
             height: 90vmin;
-            max-width: 800px;
-            max-height: 800px;
+            max-width: 850px;
+            max-height: 850px;
         }
 
         /* ─── CENTER LOGO ─── */
@@ -38,125 +38,194 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 28%;
-            height: 28%;
-            background: #e63946; /* fire-engine red */
-            border-radius: 50%;
+            width: 26%;
+            height: 26%;
+            background: #4a4a5a;
+            border-radius: 20px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: clamp(2rem, 6vmin, 4.5rem);
-            font-weight: 900;
-            color: #fff;
-            box-shadow: 0 0 0 4px #ffffff33, 0 0 40px #e6394680;
+            box-shadow: 0 0 0 4px #ffffff22, 0 0 60px #4a4a5a80;
             z-index: 10;
             text-align: center;
-            line-height: 1.2;
-            letter-spacing: 2px;
             user-select: none;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .logo:hover {
             transform: translate(-50%, -50%) scale(1.04);
-            box-shadow: 0 0 0 6px #ffffff55, 0 0 60px #e63946cc;
+            box-shadow: 0 0 0 6px #ffffff44, 0 0 80px #4a4a5acc;
         }
-        .logo small {
-            display: block;
-            font-size: 0.35em;
-            font-weight: 400;
-            letter-spacing: 1px;
-            opacity: 0.85;
+        .logo .ds {
+            font-size: clamp(3rem, 8vmin, 6rem);
+            font-weight: 900;
+            color: #ffffff;
+            background: #2ecc71;
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 2px;
+        }
+        .logo .brand {
+            font-size: clamp(0.5rem, 1.2vmin, 0.9rem);
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 6px;
+            opacity: 0.7;
         }
 
-        /* ─── CLOCK ITEMS (all 4 positions) ─── */
+        /* ─── CLOCK ITEMS ─── */
         .clock-item {
             position: absolute;
             width: 26%;
             height: 26%;
             border-radius: 20px;
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 0.75rem;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: default;
             color: #fff;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            opacity: 0; /* hidden until JS animates in */
-            transform: scale(0.8);
-        }
-        .clock-item:hover {
-            background: rgba(255, 255, 255, 0.14);
-            border-color: #e63946;
-            transform: scale(1.06) !important;
-            box-shadow: 0 0 30px #e6394640;
+            transform: scale(0.75);
+            overflow: hidden;
+            z-index: 1;
         }
 
-        .clock-item .icon {
-            font-size: clamp(1.8rem, 5vmin, 3.8rem);
-            margin-bottom: 4px;
+        /* ─── HOVER STATE: EXPAND INTO FLASHCARD ─── */
+        .clock-item:hover {
+            transform: scale(1.1) !important;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #2ecc71;
+            box-shadow: 0 0 40px #2ecc7140, 0 20px 60px rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            width: 42%;
+            height: 42%;
+            border-radius: 24px;
+            padding: 1.5rem;
         }
+
+        /* ─── ICON INSIDE ITEM ─── */
+        .clock-item .icon {
+            font-size: clamp(2rem, 5vmin, 3.8rem);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+        }
+        .clock-item:hover .icon {
+            font-size: clamp(2.8rem, 7vmin, 5rem);
+            margin-bottom: 6px;
+        }
+
+        /* ─── LABEL (always visible, small) ─── */
         .clock-item .label {
             font-weight: 700;
-            font-size: clamp(0.9rem, 2vmin, 1.6rem);
+            font-size: clamp(0.8rem, 1.8vmin, 1.4rem);
             letter-spacing: 1px;
-        }
-        .clock-item .sub {
-            font-size: clamp(0.5rem, 1.2vmin, 0.85rem);
-            opacity: 0.7;
-            margin-top: 2px;
-            font-weight: 300;
+            transition: all 0.3s ease;
         }
 
-        /* ─── POSITIONING (clock face) ─── */
-        /* 12 o'clock – Slogan */
+        /* ─── SUBTEXT (always visible) ─── */
+        .clock-item .sub {
+            font-size: clamp(0.45rem, 1vmin, 0.75rem);
+            opacity: 0.6;
+            margin-top: 2px;
+            font-weight: 300;
+            transition: all 0.3s ease;
+        }
+
+        /* ─── EXPANDED CONTENT (hidden by default, shows on hover) ─── */
+        .clock-item .expanded-content {
+            display: none;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            width: 100%;
+            text-align: left;
+            font-size: clamp(0.6rem, 1.2vmin, 0.85rem);
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+        .clock-item:hover .expanded-content {
+            display: block;
+            opacity: 1;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .clock-item .expanded-content p {
+            margin-bottom: 4px;
+        }
+        .clock-item .expanded-content .highlight {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+        .clock-item .expanded-content .review {
+            font-style: italic;
+            opacity: 0.85;
+            padding-left: 8px;
+            border-left: 2px solid #2ecc71;
+            margin-top: 3px;
+            font-size: 0.9em;
+        }
+        .clock-item .expanded-content .review strong {
+            color: #2ecc71;
+            font-style: normal;
+        }
+
+        /* ─── POSITIONING ─── */
         .item-top {
             top: 0;
             left: 50%;
-            transform: translateX(-50%) scale(0.8);
+            transform: translateX(-50%) scale(0.75);
         }
         .item-top:hover {
-            transform: translateX(-50%) scale(1.06) !important;
+            transform: translateX(-50%) scale(1.1) !important;
+            top: -4%;
         }
 
-        /* 9 o'clock – About + Services (left) */
         .item-left {
             top: 50%;
             left: 0;
-            transform: translateY(-50%) scale(0.8);
+            transform: translateY(-50%) scale(0.75);
         }
         .item-left:hover {
-            transform: translateY(-50%) scale(1.06) !important;
+            transform: translateY(-50%) scale(1.1) !important;
+            left: -4%;
         }
 
-        /* 3 o'clock – Reviews (right) */
         .item-right {
             top: 50%;
             right: 0;
-            transform: translateY(-50%) scale(0.8);
+            transform: translateY(-50%) scale(0.75);
         }
         .item-right:hover {
-            transform: translateY(-50%) scale(1.06) !important;
+            transform: translateY(-50%) scale(1.1) !important;
+            right: -4%;
         }
 
-        /* 6 o'clock – Contact (bottom) */
         .item-bottom {
             bottom: 0;
             left: 50%;
-            transform: translateX(-50%) scale(0.8);
+            transform: translateX(-50%) scale(0.75);
         }
         .item-bottom:hover {
-            transform: translateX(-50%) scale(1.06) !important;
+            transform: translateX(-50%) scale(1.1) !important;
+            bottom: -4%;
         }
 
-        /* ─── DECORATIVE RING (optional clock face line) ─── */
+        /* ─── DECORATIVE RING ─── */
         .ring {
             position: absolute;
             top: 6%;
@@ -164,7 +233,7 @@
             width: 88%;
             height: 88%;
             border-radius: 50%;
-            border: 1px dashed rgba(255, 255, 255, 0.08);
+            border: 1px dashed rgba(255, 255, 255, 0.06);
             pointer-events: none;
         }
         .ring::after {
@@ -175,17 +244,29 @@
             width: 80%;
             height: 80%;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
-        /* ─── RESPONSIVE: collapse to vertical stack on small screens ─── */
+        /* ─── SCROLLBAR STYLING ─── */
+        .clock-item .expanded-content::-webkit-scrollbar {
+            width: 3px;
+        }
+        .clock-item .expanded-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .clock-item .expanded-content::-webkit-scrollbar-thumb {
+            background: #2ecc71;
+            border-radius: 10px;
+        }
+
+        /* ─── RESPONSIVE ─── */
         @media (max-width: 640px) {
             body {
                 overflow-y: auto;
                 height: auto;
                 min-height: 100vh;
                 padding: 2rem 1rem;
-                background: #0b1a2e;
+                background: #1a1a2e;
             }
             .clock {
                 width: 100%;
@@ -203,12 +284,15 @@
                 transform: none;
                 width: 120px;
                 height: 120px;
-                font-size: 2.2rem;
-                box-shadow: 0 0 0 4px #ffffff33, 0 0 40px #e6394680;
+                border-radius: 20px;
+                box-shadow: 0 0 0 4px #ffffff22, 0 0 40px #4a4a5a80;
                 flex-shrink: 0;
             }
             .logo:hover {
                 transform: scale(1.04);
+            }
+            .logo .ds {
+                font-size: 2.8rem;
             }
             .clock-item {
                 position: static;
@@ -217,39 +301,43 @@
                 height: auto;
                 padding: 1rem 1.2rem;
                 border-radius: 16px;
-                flex-direction: row;
-                gap: 1rem;
-                justify-content: flex-start;
-                opacity: 0;
-                transform: scale(0.9) !important;
+                flex-direction: column;
+                align-items: flex-start;
                 backdrop-filter: blur(4px);
-            }
-            .clock-item .icon {
-                font-size: 2rem;
-                margin-bottom: 0;
-            }
-            .clock-item .label {
-                font-size: 1.1rem;
-            }
-            .clock-item .sub {
-                font-size: 0.75rem;
-                margin-top: 0;
+                transform: scale(1) !important;
+                min-height: 70px;
             }
             .clock-item:hover {
                 transform: scale(1.02) !important;
+                width: 100%;
+                height: auto;
+                padding: 1.2rem;
+                min-height: 120px;
+            }
+            .clock-item .icon {
+                font-size: 1.8rem;
+                margin-bottom: 2px;
+            }
+            .clock-item:hover .icon {
+                font-size: 2.2rem;
+                margin-bottom: 4px;
+            }
+            .clock-item .label {
+                font-size: 1rem;
+            }
+            .clock-item .sub {
+                font-size: 0.7rem;
+            }
+            .clock-item .expanded-content {
+                font-size: 0.75rem;
+            }
+            .clock-item:hover .expanded-content {
+                max-height: 400px;
             }
             .ring {
                 display: none;
             }
         }
-
-        /* ─── ANIMATED ENTRANCE (JS triggers this) ─── */
-        .clock-item.visible {
-            opacity: 1;
-            transform: scale(1);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        /* each item gets a staggered delay via JS inline style */
     </style>
 </head>
 <body>
@@ -261,62 +349,76 @@
 
         <!-- ─── LOGO (center) ─── -->
         <div class="logo">
-            H<span style="font-weight:300;">2</span>O<span style="font-weight:300;">+</span>
-            <small>fire protection</small>
+            <div class="ds">DS</div>
+            <div class="brand">Daniel's Services</div>
         </div>
 
-        <!-- ─── 12 o'clock – Slogan ─── -->
-        <a href="#" class="clock-item item-top" data-delay="100">
-            <span class="icon">🔥</span>
-            <span class="label">Reliable. Ready. Rapid.</span>
-            <span class="sub">Fire hydrant experts since 2005</span>
-        </a>
+        <!-- ════════════════════════════════════════════ -->
+        <!-- ─── 12 o'clock – Title/Slogan ─── -->
+        <!-- ════════════════════════════════════════════ -->
+        <div class="clock-item item-top">
+            <span class="icon">⏰</span>
+            <span class="label">Daniel's Services</span>
+            <span class="sub">Working around the clock, serving near you!</span>
+            <div class="expanded-content">
+                <p style="font-size:1.1em;font-weight:700;color:#2ecc71;">Daniel's Services</p>
+                <p style="font-size:1em;opacity:0.9;">Working around the clock, serving <strong>near you</strong>!</p>
+                <p style="margin-top:6px;opacity:0.7;font-size:0.85em;">⚡ Reliable · Trusted · Local</p>
+            </div>
+        </div>
 
-        <!-- ─── 9 o'clock – About + Services ─── -->
-        <a href="#" class="clock-item item-left" data-delay="250">
+        <!-- ════════════════════════════════════════════ -->
+        <!-- ─── 9 o'clock – About Us + Services ─── -->
+        <!-- ════════════════════════════════════════════ -->
+        <div class="clock-item item-left">
             <span class="icon">⚙️</span>
             <span class="label">About &amp; Services</span>
-            <span class="sub">Installation · Repair · Maintenance</span>
-        </a>
+            <span class="sub">Faith · Hard Work · Detail</span>
+            <div class="expanded-content">
+                <p style="font-weight:700;color:#2ecc71;font-size:1em;">About Us</p>
+                <p>At Daniel's Service, what we do is have faith and believe in hard work. We pay attention to detail, and take the job serious. It's what has allowed our leaders to get the job done and our communities to continue to grow.</p>
+                <p style="font-weight:700;color:#2ecc71;font-size:1em;margin-top:8px;">Our Services</p>
+                <p>Our experienced professionals provide:</p>
+                <p style="padding-left:12px;">• Installation &amp; mapping of underground piping</p>
+                <p style="padding-left:12px;">• Fire hydrant / service line installation</p>
+                <p style="padding-left:12px;">• <span class="highlight">24/7</span> quick response &amp; emergency repair services</p>
+            </div>
+        </div>
 
-        <!-- ─── 3 o'clock – Reviews ─── -->
-        <a href="#" class="clock-item item-right" data-delay="400">
+        <!-- ════════════════════════════════════════════ -->
+        <!-- ─── 3 o'clock – Accreditation/Reviews ─── -->
+        <!-- ════════════════════════════════════════════ -->
+        <div class="clock-item item-right">
             <span class="icon">⭐</span>
             <span class="label">Reviews</span>
-            <span class="sub">4.9/5 · 120+ happy clients</span>
-        </a>
+            <span class="sub">Licensed · Trusted · Local</span>
+            <div class="expanded-content">
+                <p style="font-weight:700;color:#2ecc71;font-size:1em;">Accreditation</p>
+                <p>We are <span class="highlight">licensed</span> to service and install in <strong>Durham County</strong> &amp; all of <strong>eastern North Carolina</strong>.</p>
+                <p style="font-weight:700;color:#2ecc71;font-size:1em;margin-top:8px;">What our community says:</p>
+                <div class="review"><strong>Maria:</strong> "They were quick, clean, and got the job done."</div>
+                <div class="review"><strong>Matt:</strong> "10/10 service."</div>
+                <div class="review"><strong>Ana:</strong> "I'd highly recommend to anybody <strong>near me</strong>. They answer quick."</div>
+            </div>
+        </div>
 
-        <!-- ─── 6 o'clock – Contact Us ─── -->
-        <a href="#" class="clock-item item-bottom" data-delay="550">
+        <!-- ════════════════════════════════════════════ -->
+        <!-- ─── 6 o'clock – Contact Info ─── -->
+        <!-- ════════════════════════════════════════════ -->
+        <div class="clock-item item-bottom">
             <span class="icon">📞</span>
             <span class="label">Contact Us</span>
-            <span class="sub">(555) 234-5678 · 24/7 emergency</span>
-        </a>
+            <span class="sub">Call or visit us</span>
+            <div class="expanded-content">
+                <p style="font-weight:700;color:#2ecc71;font-size:1em;">Get in Touch</p>
+                <p>📱 <strong>(555) 234-5678</strong></p>
+                <p>✉️ info@danielsservices.com</p>
+                <p>📍 <strong>Durham County, NC</strong><br />Serving all of eastern North Carolina</p>
+                <p style="margin-top:6px;color:#2ecc71;font-weight:600;">🚨 24/7 Emergency Response</p>
+            </div>
+        </div>
 
     </div>
-
-    <script>
-        // ─── STAGGERED ENTRANCE ANIMATION ───
-        document.addEventListener('DOMContentLoaded', () => {
-            const items = document.querySelectorAll('.clock-item');
-            items.forEach((el) => {
-                const delay = parseInt(el.getAttribute('data-delay')) || 0;
-                setTimeout(() => {
-                    el.classList.add('visible');
-                }, delay);
-            });
-        });
-
-        // ─── (Optional) click handlers – replace # with real URLs ───
-        document.querySelectorAll('.clock-item').forEach((link) => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                // For demo – show which section was clicked
-                const label = link.querySelector('.label')?.innerText || 'section';
-                alert(`You clicked: ${label}\n(Replace this with actual page navigation.)`);
-            });
-        });
-    </script>
 
 </body>
 </html>
