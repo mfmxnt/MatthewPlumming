@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Daniel's Services - Clock Layout</title>
+    <title>Daniel's Services - Full Window Eclipse</title>
     <style>
         /* ─── RESET & BASE ─── */
         * {
@@ -12,24 +12,203 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #1a1a2e;
             color: #ffffff;
-            height: 100vh;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* ─── HABLAMOS ESPAÑOL — TOP LEFT ─── */
+        .espanol-badge {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(46, 204, 113, 0.12);
+            border: 1px solid rgba(46, 204, 113, 0.25);
+            border-radius: 30px;
+            padding: 0.5rem 1.2rem;
+            font-size: clamp(0.7rem, 1.2vmin, 0.95rem);
+            font-weight: 500;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            z-index: 100;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: all 0.3s ease;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .espanol-badge:hover {
+            background: rgba(46, 204, 113, 0.2);
+            border-color: #2ecc71;
+            transform: scale(1.04);
+            box-shadow: 0 0 30px #2ecc7130;
+        }
+        .espanol-badge .flag {
+            font-size: 1.1em;
+        }
+
         /* ─── CLOCK CONTAINER ─── */
         .clock {
-            position: relative;
-            width: 90vmin;
-            height: 90vmin;
-            max-width: 850px;
-            max-height: 850px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ─── CORNER IMAGES ─── */
+        .corner-image {
+            position: fixed;
+            width: 18vmin;
+            height: 18vmin;
+            max-width: 160px;
+            max-height: 160px;
+            min-width: 60px;
+            min-height: 60px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 5;
+            opacity: 0.85;
+            background: #2a2a3e;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        /* Show a placeholder if image fails */
+        .corner-image::before {
+            content: "📷";
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+        .corner-image:hover {
+            transform: scale(1.08);
+            opacity: 1;
+            border-color: #2ecc71;
+            box-shadow: 0 0 40px #2ecc7130, 0 12px 40px rgba(0, 0, 0, 0.5);
+            z-index: 15;
+        }
+
+        /* ─── EXPANDED STATE FOR CORNER IMAGES ─── */
+        .corner-image.expanded {
+            width: 45vmin !important;
+            height: 45vmin !important;
+            max-width: 500px !important;
+            max-height: 500px !important;
+            min-width: 200px !important;
+            min-height: 200px !important;
+            z-index: 50 !important;
+            border-color: #2ecc71 !important;
+            box-shadow: 0 0 60px #2ecc7150, 0 30px 80px rgba(0, 0, 0, 0.8) !important;
+            opacity: 1 !important;
+            border-radius: 24px !important;
+            transform: scale(1) !important;
+            pointer-events: auto;
+        }
+        /* Position-specific expanded states */
+        .corner-tl.expanded {
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) scale(1) !important;
+        }
+        .corner-tr.expanded {
+            top: 50% !important;
+            right: 50% !important;
+            transform: translate(50%, -50%) scale(1) !important;
+        }
+        .corner-bl.expanded {
+            bottom: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, 50%) scale(1) !important;
+        }
+        .corner-br.expanded {
+            bottom: 50% !important;
+            right: 50% !important;
+            transform: translate(50%, 50%) scale(1) !important;
+        }
+
+        /* ─── OVERLAY (dims background when image is expanded) ─── */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 40;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* ─── POSITIONING CORNER IMAGES ─── */
+        .corner-tl {
+            top: 12%;
+            left: 12%;
+        }
+        .corner-tr {
+            top: 12%;
+            right: 12%;
+        }
+        .corner-bl {
+            bottom: 12%;
+            left: 12%;
+        }
+        .corner-br {
+            bottom: 12%;
+            right: 12%;
+        }
+
+        /* ─── ECLIPSE RING ─── */
+        .eclipse-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85vmin;
+            height: 85vmin;
+            max-width: 900px;
+            max-height: 900px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.06);
+            pointer-events: none;
+        }
+        .eclipse-ring::after {
+            content: '';
+            position: absolute;
+            top: 8%;
+            left: 8%;
+            width: 84%;
+            height: 84%;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         /* ─── CENTER LOGO ─── */
@@ -38,8 +217,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 26%;
-            height: 26%;
+            width: 22vmin;
+            height: 22vmin;
+            max-width: 200px;
+            max-height: 200px;
             background: #4a4a5a;
             border-radius: 20px;
             display: flex;
@@ -53,16 +234,16 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .logo:hover {
-            transform: translate(-50%, -50%) scale(1.04);
+            transform: translate(-50%, -50%) scale(1.06);
             box-shadow: 0 0 0 6px #ffffff44, 0 0 80px #4a4a5acc;
         }
         .logo .ds {
-            font-size: clamp(3rem, 8vmin, 6rem);
+            font-size: clamp(2.5rem, 6vmin, 5rem);
             font-weight: 900;
             color: #ffffff;
             background: #2ecc71;
-            width: 70%;
-            height: 70%;
+            width: 72%;
+            height: 72%;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -70,23 +251,21 @@
             letter-spacing: 2px;
         }
         .logo .brand {
-            font-size: clamp(0.5rem, 1.2vmin, 0.9rem);
+            font-size: clamp(0.4rem, 1vmin, 0.8rem);
             font-weight: 300;
             letter-spacing: 3px;
             text-transform: uppercase;
-            margin-top: 6px;
+            margin-top: 4px;
             opacity: 0.7;
         }
 
         /* ─── CLOCK ITEMS ─── */
         .clock-item {
             position: absolute;
-            width: 26%;
-            height: 26%;
             border-radius: 20px;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             flex-direction: column;
@@ -101,50 +280,54 @@
             transform: scale(0.75);
             overflow: hidden;
             z-index: 1;
+            text-decoration: none;
+            width: 22vmin;
+            height: 22vmin;
+            max-width: 200px;
+            max-height: 200px;
+            min-width: 120px;
+            min-height: 120px;
         }
 
-        /* ─── HOVER STATE: EXPAND INTO FLASHCARD ─── */
         .clock-item:hover {
-            transform: scale(1.1) !important;
+            transform: scale(1.15) !important;
             background: rgba(255, 255, 255, 0.12);
             border-color: #2ecc71;
             box-shadow: 0 0 40px #2ecc7140, 0 20px 60px rgba(0, 0, 0, 0.5);
             z-index: 20;
-            width: 42%;
-            height: 42%;
+            width: 36vmin;
+            height: 36vmin;
+            max-width: 340px;
+            max-height: 340px;
             border-radius: 24px;
             padding: 1.5rem;
         }
 
-        /* ─── ICON INSIDE ITEM ─── */
         .clock-item .icon {
-            font-size: clamp(2rem, 5vmin, 3.8rem);
+            font-size: clamp(1.8rem, 4vmin, 3.5rem);
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             flex-shrink: 0;
         }
         .clock-item:hover .icon {
-            font-size: clamp(2.8rem, 7vmin, 5rem);
+            font-size: clamp(2.5rem, 5.5vmin, 4.5rem);
             margin-bottom: 6px;
         }
 
-        /* ─── LABEL (always visible, small) ─── */
         .clock-item .label {
             font-weight: 700;
-            font-size: clamp(0.8rem, 1.8vmin, 1.4rem);
+            font-size: clamp(0.7rem, 1.4vmin, 1.2rem);
             letter-spacing: 1px;
             transition: all 0.3s ease;
         }
 
-        /* ─── SUBTEXT (always visible) ─── */
         .clock-item .sub {
-            font-size: clamp(0.45rem, 1vmin, 0.75rem);
+            font-size: clamp(0.4rem, 0.9vmin, 0.7rem);
             opacity: 0.6;
             margin-top: 2px;
             font-weight: 300;
             transition: all 0.3s ease;
         }
 
-        /* ─── EXPANDED CONTENT (hidden by default, shows on hover) ─── */
         .clock-item .expanded-content {
             display: none;
             opacity: 0;
@@ -153,19 +336,19 @@
             transition: all 0.4s ease;
             width: 100%;
             text-align: left;
-            font-size: clamp(0.6rem, 1.2vmin, 0.85rem);
+            font-size: clamp(0.5rem, 1vmin, 0.8rem);
             line-height: 1.5;
             margin-top: 4px;
         }
         .clock-item:hover .expanded-content {
             display: block;
             opacity: 1;
-            max-height: 500px;
+            max-height: 600px;
             overflow-y: auto;
         }
 
         .clock-item .expanded-content p {
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .clock-item .expanded-content .highlight {
             color: #2ecc71;
@@ -184,179 +367,316 @@
             font-style: normal;
         }
 
-        /* ─── POSITIONING ─── */
+        /* ════════════════════════════════════════════ */
+        /* ─── 12 O'CLOCK — ALWAYS EXPANDED ─── */
+        /* ════════════════════════════════════════════ */
         .item-top {
-            top: 0;
+            top: 10%;
             left: 50%;
-            transform: translateX(-50%) scale(0.75);
+            transform: translateX(-50%) scale(1) !important;
+            width: 36vmin;
+            height: 36vmin;
+            max-width: 340px;
+            max-height: 340px;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #2ecc71;
+            box-shadow: 0 0 40px #2ecc7140, 0 20px 60px rgba(0, 0, 0, 0.5);
+            z-index: 20;
+            cursor: default;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .item-top:hover {
-            transform: translateX(-50%) scale(1.1) !important;
-            top: -4%;
+        .item-top .icon {
+            font-size: clamp(2.5rem, 5.5vmin, 4.5rem);
+            margin-bottom: 6px;
+        }
+        .item-top .expanded-content {
+            display: block !important;
+            opacity: 1 !important;
+            max-height: 600px !important;
+            overflow-y: auto;
+        }
+        /* SHRINK STATE — triggered by JavaScript when other items expand */
+        .item-top.shrink {
+            transform: translateX(-50%) scale(0.75) !important;
+            width: 26vmin !important;
+            height: 26vmin !important;
+            padding: 0.75rem !important;
+            opacity: 0.7 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+        }
+        .item-top.shrink .icon {
+            font-size: clamp(1.8rem, 3.5vmin, 2.8rem) !important;
+            margin-bottom: 2px !important;
+        }
+        .item-top.shrink .label {
+            font-size: clamp(0.5rem, 1vmin, 0.8rem) !important;
+        }
+        .item-top.shrink .sub {
+            font-size: clamp(0.3rem, 0.6vmin, 0.5rem) !important;
+        }
+        .item-top.shrink .expanded-content {
+            display: none !important;
+            opacity: 0 !important;
+            max-height: 0 !important;
         }
 
+        /* ─── POSITIONING FOR OTHER ITEMS ─── */
         .item-left {
             top: 50%;
-            left: 0;
+            left: 10%;
             transform: translateY(-50%) scale(0.75);
         }
         .item-left:hover {
-            transform: translateY(-50%) scale(1.1) !important;
-            left: -4%;
+            transform: translateY(-50%) scale(1.15) !important;
+            left: 6%;
         }
 
         .item-right {
             top: 50%;
-            right: 0;
+            right: 10%;
             transform: translateY(-50%) scale(0.75);
         }
         .item-right:hover {
-            transform: translateY(-50%) scale(1.1) !important;
-            right: -4%;
+            transform: translateY(-50%) scale(1.15) !important;
+            right: 6%;
         }
 
         .item-bottom {
-            bottom: 0;
+            bottom: 10%;
             left: 50%;
             transform: translateX(-50%) scale(0.75);
         }
         .item-bottom:hover {
-            transform: translateX(-50%) scale(1.1) !important;
-            bottom: -4%;
+            transform: translateX(-50%) scale(1.15) !important;
+            bottom: 6%;
+        }
+        .item-bottom {
+            cursor: pointer;
         }
 
-        /* ─── DECORATIVE RING ─── */
-        .ring {
-            position: absolute;
-            top: 6%;
-            left: 6%;
-            width: 88%;
-            height: 88%;
-            border-radius: 50%;
-            border: 1px dashed rgba(255, 255, 255, 0.06);
-            pointer-events: none;
-        }
-        .ring::after {
-            content: '';
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 80%;
-            height: 80%;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        /* ─── SCROLLBAR STYLING ─── */
-        .clock-item .expanded-content::-webkit-scrollbar {
+        /* ─── SCROLLBAR ─── */
+        .clock-item .expanded-content::-webkit-scrollbar,
+        .item-top .expanded-content::-webkit-scrollbar {
             width: 3px;
         }
-        .clock-item .expanded-content::-webkit-scrollbar-track {
+        .clock-item .expanded-content::-webkit-scrollbar-track,
+        .item-top .expanded-content::-webkit-scrollbar-track {
             background: transparent;
         }
-        .clock-item .expanded-content::-webkit-scrollbar-thumb {
+        .clock-item .expanded-content::-webkit-scrollbar-thumb,
+        .item-top .expanded-content::-webkit-scrollbar-thumb {
             background: #2ecc71;
             border-radius: 10px;
         }
 
         /* ─── RESPONSIVE ─── */
-        @media (max-width: 640px) {
-            body {
-                overflow-y: auto;
-                height: auto;
-                min-height: 100vh;
-                padding: 2rem 1rem;
-                background: #1a1a2e;
-            }
-            .clock {
-                width: 100%;
-                height: auto;
-                max-width: 400px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 1.25rem;
-                position: static;
-                padding: 1rem 0;
-            }
-            .logo {
-                position: static;
-                transform: none;
-                width: 120px;
-                height: 120px;
-                border-radius: 20px;
-                box-shadow: 0 0 0 4px #ffffff22, 0 0 40px #4a4a5a80;
-                flex-shrink: 0;
-            }
-            .logo:hover {
-                transform: scale(1.04);
-            }
-            .logo .ds {
-                font-size: 2.8rem;
-            }
+        @media (max-width: 768px) {
             .clock-item {
-                position: static;
-                transform: none !important;
-                width: 100%;
-                height: auto;
-                padding: 1rem 1.2rem;
-                border-radius: 16px;
-                flex-direction: column;
-                align-items: flex-start;
-                backdrop-filter: blur(4px);
-                transform: scale(1) !important;
-                min-height: 70px;
+                width: 28vmin;
+                height: 28vmin;
+                min-width: 80px;
+                min-height: 80px;
             }
             .clock-item:hover {
-                transform: scale(1.02) !important;
-                width: 100%;
-                height: auto;
-                padding: 1.2rem;
+                width: 60vmin;
+                height: 40vmin;
+                min-width: 200px;
+                min-height: 140px;
+            }
+            .item-top {
+                width: 60vmin !important;
+                height: 40vmin !important;
+                min-width: 200px;
+                min-height: 140px;
+                top: 6%;
+            }
+            .item-top.shrink {
+                width: 40vmin !important;
+                height: 30vmin !important;
+                min-width: 120px !important;
+                min-height: 80px !important;
+            }
+            .item-top .icon {
+                font-size: clamp(2rem, 5vmin, 3.5rem);
+            }
+            .item-left { left: 4%; }
+            .item-right { right: 4%; }
+            .item-bottom { bottom: 6%; }
+            .logo {
+                width: 28vmin;
+                height: 28vmin;
+                min-width: 100px;
+                min-height: 100px;
+            }
+            .eclipse-ring {
+                width: 80vmin;
+                height: 80vmin;
+            }
+            .corner-image {
+                width: 14vmin;
+                height: 14vmin;
+                min-width: 40px;
+                min-height: 40px;
+                border-radius: 14px;
+            }
+            .corner-image.expanded {
+                width: 50vmin !important;
+                height: 50vmin !important;
+                max-width: 400px !important;
+                max-height: 400px !important;
+                min-width: 150px !important;
+                min-height: 150px !important;
+            }
+            .corner-tl { top: 10%; left: 10%; }
+            .corner-tr { top: 10%; right: 10%; }
+            .corner-bl { bottom: 10%; left: 10%; }
+            .corner-br { bottom: 10%; right: 10%; }
+            .espanol-badge {
+                top: 12px;
+                left: 12px;
+                padding: 0.3rem 0.9rem;
+                font-size: clamp(0.6rem, 1vmin, 0.8rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .clock-item {
+                width: 32vmin;
+                height: 32vmin;
+                min-width: 60px;
+                min-height: 60px;
+                padding: 0.4rem;
+                border-radius: 14px;
+            }
+            .clock-item:hover {
+                width: 80vmin;
+                height: 50vmin;
+                min-width: 160px;
                 min-height: 120px;
+                padding: 1rem;
+            }
+            .item-top {
+                width: 80vmin !important;
+                height: 50vmin !important;
+                min-width: 160px;
+                min-height: 120px;
+                padding: 1rem;
+                top: 4%;
+            }
+            .item-top.shrink {
+                width: 50vmin !important;
+                height: 35vmin !important;
+                min-width: 100px !important;
+                min-height: 70px !important;
+                padding: 0.5rem !important;
+            }
+            .item-top .icon {
+                font-size: clamp(1.8rem, 5vmin, 3rem);
             }
             .clock-item .icon {
-                font-size: 1.8rem;
-                margin-bottom: 2px;
+                font-size: clamp(1.2rem, 3.5vmin, 2rem);
             }
             .clock-item:hover .icon {
-                font-size: 2.2rem;
-                margin-bottom: 4px;
+                font-size: clamp(1.8rem, 5vmin, 3rem);
             }
             .clock-item .label {
-                font-size: 1rem;
+                font-size: clamp(0.5rem, 1.2vmin, 0.8rem);
             }
             .clock-item .sub {
-                font-size: 0.7rem;
+                font-size: clamp(0.3rem, 0.7vmin, 0.55rem);
             }
             .clock-item .expanded-content {
-                font-size: 0.75rem;
+                font-size: clamp(0.4rem, 0.9vmin, 0.65rem);
             }
-            .clock-item:hover .expanded-content {
-                max-height: 400px;
+            .item-left { left: 2%; }
+            .item-right { right: 2%; }
+            .item-bottom { bottom: 4%; }
+            .logo {
+                width: 32vmin;
+                height: 32vmin;
+                min-width: 80px;
+                min-height: 80px;
             }
-            .ring {
-                display: none;
+            .logo .ds {
+                font-size: clamp(1.8rem, 5vmin, 3rem);
+            }
+            .eclipse-ring {
+                width: 70vmin;
+                height: 70vmin;
+            }
+            .corner-image {
+                width: 12vmin;
+                height: 12vmin;
+                min-width: 30px;
+                min-height: 30px;
+                border-radius: 10px;
+            }
+            .corner-image.expanded {
+                width: 60vmin !important;
+                height: 60vmin !important;
+                max-width: 300px !important;
+                max-height: 300px !important;
+                min-width: 120px !important;
+                min-height: 120px !important;
+            }
+            .corner-tl { top: 6%; left: 6%; }
+            .corner-tr { top: 6%; right: 6%; }
+            .corner-bl { bottom: 6%; left: 6%; }
+            .corner-br { bottom: 6%; right: 6%; }
+            .espanol-badge {
+                top: 10px;
+                left: 10px;
+                padding: 0.2rem 0.7rem;
+                font-size: clamp(0.5rem, 0.9vmin, 0.65rem);
+                border-radius: 20px;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- ─── OVERLAY (dims background when image is expanded) ─── -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ─── HABLAMOS ESPAÑOL ─── -->
+    <div class="espanol-badge">
+        <span class="flag">🇪🇸</span>
+        Hablamos Español
+    </div>
+
+    <!-- ════════════════════════════════════════════ -->
+    <!-- ─── CORNER IMAGES ─── -->
+    <!-- ════════════════════════════════════════════ -->
+
+    <!-- Top-Left Corner -->
+    <img src="IMG_4088.png" alt="Daniel's Services Image 1" class="corner-image corner-tl" id="img1" />
+
+    <!-- Top-Right Corner -->
+    <img src="IMG_4089.png" alt="Daniel's Services Image 2" class="corner-image corner-tr" id="img2" />
+
+    <!-- Bottom-Left Corner -->
+    <img src="IMG_4090.png" alt="Daniel's Services Image 3" class="corner-image corner-bl" id="img3" />
+
+    <!-- Bottom-Right Corner -->
+    <img src="IMG_4091.png" alt="Daniel's Services Image 4" class="corner-image corner-br" id="img4" />
+
+    <!-- ─── CLOCK ─── -->
     <div class="clock">
 
-        <!-- decorative rings -->
-        <div class="ring"></div>
+        <div class="eclipse-ring"></div>
 
-        <!-- ─── LOGO (center) ─── -->
+        <!-- LOGO -->
         <div class="logo">
             <div class="ds">DS</div>
             <div class="brand">Daniel's Services</div>
         </div>
 
         <!-- ════════════════════════════════════════════ -->
-        <!-- ─── 12 o'clock – Title/Slogan ─── -->
+        <!-- ─── 12 o'clock — ALWAYS EXPANDED ─── -->
         <!-- ════════════════════════════════════════════ -->
-        <div class="clock-item item-top">
+        <div class="clock-item item-top" id="titleItem">
             <span class="icon">⏰</span>
             <span class="label">Daniel's Services</span>
             <span class="sub">Working around the clock, serving near you!</span>
@@ -367,10 +687,8 @@
             </div>
         </div>
 
-        <!-- ════════════════════════════════════════════ -->
-        <!-- ─── 9 o'clock – About Us + Services ─── -->
-        <!-- ════════════════════════════════════════════ -->
-        <div class="clock-item item-left">
+        <!-- 9 o'clock -->
+        <div class="clock-item item-left" data-target="titleItem">
             <span class="icon">⚙️</span>
             <span class="label">About &amp; Services</span>
             <span class="sub">Faith · Hard Work · Detail</span>
@@ -385,10 +703,8 @@
             </div>
         </div>
 
-        <!-- ════════════════════════════════════════════ -->
-        <!-- ─── 3 o'clock – Accreditation/Reviews ─── -->
-        <!-- ════════════════════════════════════════════ -->
-        <div class="clock-item item-right">
+        <!-- 3 o'clock -->
+        <div class="clock-item item-right" data-target="titleItem">
             <span class="icon">⭐</span>
             <span class="label">Reviews</span>
             <span class="sub">Licensed · Trusted · Local</span>
@@ -402,10 +718,8 @@
             </div>
         </div>
 
-        <!-- ════════════════════════════════════════════ -->
-        <!-- ─── 6 o'clock – Contact Info ─── -->
-        <!-- ════════════════════════════════════════════ -->
-        <div class="clock-item item-bottom">
+        <!-- 6 o'clock — Contact -->
+        <a href="contact.html" class="clock-item item-bottom" data-target="titleItem">
             <span class="icon">📞</span>
             <span class="label">Contact Us</span>
             <span class="sub">Call or visit us</span>
@@ -415,10 +729,101 @@
                 <p>✉️ info@danielsservices.com</p>
                 <p>📍 <strong>Durham County, NC</strong><br />Serving all of eastern North Carolina</p>
                 <p style="margin-top:6px;color:#2ecc71;font-weight:600;">🚨 24/7 Emergency Response</p>
+                <p style="margin-top:4px;font-size:0.85em;opacity:0.6;">⬇️ Click to visit our contact page</p>
             </div>
-        </div>
+        </a>
 
     </div>
+
+    <script>
+        // ─── SHRINK TITLE WHEN OTHER ITEMS ARE HOVERED ───
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleItem = document.getElementById('titleItem');
+            const otherItems = document.querySelectorAll('.clock-item:not(.item-top)');
+
+            otherItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    titleItem.classList.add('shrink');
+                });
+                item.addEventListener('mouseleave', function() {
+                    titleItem.classList.remove('shrink');
+                });
+            });
+
+            titleItem.addEventListener('mouseenter', function() {
+                titleItem.classList.remove('shrink');
+            });
+        });
+
+        // ─── IMAGE EXPAND/COLLAPSE ───
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('.corner-image');
+            const overlay = document.getElementById('overlay');
+            let expandedImage = null;
+
+            function closeImage() {
+                if (expandedImage) {
+                    expandedImage.classList.remove('expanded');
+                    overlay.classList.remove('active');
+                    expandedImage = null;
+                    document.body.style.overflow = 'hidden'; // Keep body locked
+                }
+            }
+
+            function openImage(img) {
+                // Close any previously expanded image
+                closeImage();
+                // Expand the clicked image
+                img.classList.add('expanded');
+                overlay.classList.add('active');
+                expandedImage = img;
+            }
+
+            images.forEach(img => {
+                img.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (this.classList.contains('expanded')) {
+                        closeImage();
+                    } else {
+                        openImage(this);
+                    }
+                });
+            });
+
+            // Click overlay to close
+            overlay.addEventListener('click', function() {
+                closeImage();
+            });
+
+            // Escape key to close
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeImage();
+                }
+            });
+        });
+
+        // ─── DEBUG: Check if images are loading ───
+        window.addEventListener('load', function() {
+            const images = document.querySelectorAll('.corner-image');
+            images.forEach(img => {
+                if (!img.complete || img.naturalWidth === 0) {
+                    console.warn('⚠️ Image failed to load:', img.src);
+                    const filename = img.src.split('/').pop();
+                    img.style.display = 'flex';
+                    img.style.alignItems = 'center';
+                    img.style.justifyContent = 'center';
+                    img.style.color = 'rgba(255,255,255,0.5)';
+                    img.style.fontSize = '0.6rem';
+                    img.style.textAlign = 'center';
+                    img.style.padding = '0.2rem';
+                    img.innerHTML = '❌<br>' + filename;
+                } else {
+                    console.log('✅ Image loaded:', img.src);
+                }
+            });
+        });
+    </script>
 
 </body>
 </html>
